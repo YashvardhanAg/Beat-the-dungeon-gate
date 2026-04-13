@@ -12,6 +12,8 @@ To balance the difficulty, I implemented a "Shield" power-up that allows players
 
 
 
-https://github.com/user-attachments/assets/d869d5d2-1e27-4c73-ae48-f6c142e8b742
 
+
+
+https://github.com/user-attachments/assets/cb18814d-bd76-46ff-8deb-63617be45639
 
