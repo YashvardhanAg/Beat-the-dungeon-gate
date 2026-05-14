@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     private float elapsedTime = 0;
     public bool isGameActive = false;
     public float[] xSpawnPoints = new float[4];
-    private float gateSpeed = 0.125f;
+    private float gateSpeed = 20f;
     private float displacementX = 5f;
 
     public Player playerScript;
@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Button startGameButton;
     [SerializeField] private Button restartGameButton;
+    [SerializeField] private Button HowToPlayButton;
 
     [SerializeField] private AudioSource menuMusic;
     [SerializeField] private AudioSource gameMusic;
@@ -75,7 +76,7 @@ public class GameManager : MonoBehaviour
         }
         if (elapsedTime > timerStart)
         {
-            ySpawnPoint -= gateSpeed;
+            ySpawnPoint -= gateSpeed*Time.deltaTime;
             DungeonGateMovement(); //Abstraction
         }
     }
@@ -88,7 +89,10 @@ public class GameManager : MonoBehaviour
             topBar.gameObject.SetActive(false);
             player.gameObject.SetActive(false);
             dungeonGate.gameObject.SetActive(false);
-            menuMusic.gameObject.SetActive(true);
+            if (BackgroundMusic.instance != null)
+            {
+                BackgroundMusic.instance.PlayMusic();
+            }
             gameMusic.gameObject.SetActive(false);
             playerScore = 500 - Mathf.Abs(target - score);
             if(playerScore == 500)
@@ -122,7 +126,7 @@ public class GameManager : MonoBehaviour
     {
         if (!playerScript.dungeonCollided)
         {
-        dungeonGate.transform.Translate(0, -gateSpeed, 0);
+        dungeonGate.transform.Translate(0, -gateSpeed*Time.deltaTime, 0);
         }
         if (dungeonGate.transform.position.y < 35)
         {
@@ -175,6 +179,7 @@ public class GameManager : MonoBehaviour
         isGameActive = true;
         volumeObject.gameObject.SetActive(false);
         topBar.gameObject.SetActive(true);
+        HowToPlayButton.gameObject.SetActive(false);
         timerStart = Random.Range(60,121);
         startGameButton.gameObject.SetActive(false);
         player.gameObject.SetActive(true);
@@ -183,7 +188,10 @@ public class GameManager : MonoBehaviour
         targetText.text = "Target: " + target.ToString();
         targetTextStationary.text = "Target: " + target.ToString();
         score = 0;
-        menuMusic.gameObject.SetActive(false);
+        if (BackgroundMusic.instance != null)
+        {
+            BackgroundMusic.instance.StopMusic();
+        }
         gameMusic.gameObject.SetActive(true);
         StartCoroutine("SpawnNumbers");
     }
@@ -192,5 +200,9 @@ public class GameManager : MonoBehaviour
     {
         float decibalVolume = Mathf.Log10(Mathf.Max(volume, 0.0001f)) * 20;
         masterMixer.SetFloat("MasterVolume",decibalVolume);
+    }
+    public static void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 }
